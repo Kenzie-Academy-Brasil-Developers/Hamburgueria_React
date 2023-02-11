@@ -1,18 +1,19 @@
 import styled from "styled-components";
 
 export const Container = styled.header`
-
-header{
-  background-color: var(--grey-0);
-  height: 159px;
-  width:350px;
-}
+  header {
+    background-color: var(--grey-0);
+    height: 80px;
+    max-width: 100%;
+    padding-left: 115px;
+  }
 
   .title-header {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
+    margin-left: -27px;
   }
 
   h1 {
@@ -28,33 +29,30 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 325px;
+    width: 364px;
     height: 60px;
     background-color: white;
-    margin-left: 15px;
+    margin-left: 635px;
     border-radius: 10px;
+
   }
 
   .search-but {
     display: flex;
-    gap: 10px;
-    justify-content: center;
     align-items: center;
-    gap: 70px;
   }
 
   input {
-    width: 123px;
+    width: 234px;
     height: 19px;
     border: none;
-
   }
 
   input::-webkit-input-placeholder {
     color: var(--grey-50);
   }
 
-  button {
+  .but-header {
     width: 107px;
     height: 40px;
     background-color: var(--Color-primary);
@@ -62,63 +60,32 @@ header{
     font-size: 14px;
     color: var(--grey-0);
     border: none;
+    margin-left: 2px;
   }
 
-  @media(min-width:375px){
-  header{
-    width: 375px;
+  @media (max-width: 1024px) {
+    .input-search {
+      margin-left: 330px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .input-search {
+      margin-left: 99px;
+    }
+  }
+
+@media(max-width:425px){
+  .input-search{
+    position:absolute;
+    left: -68px;
+    top: 100px;
   }
 }
 
-@media(min-width:425px){
-    header{
-      width: 415px;
-      margin-left: 5px;
-    }
-
-    .input-search{
-      margin-left:7px;
-    }
-    
+@media(max-width:375px){
+  .input-search{
+    left: -100px;
   }
-
-  @media(min-width:768px){
-    header{
-      width: 760px;
-    }
-    .input-search{
-      margin-left:215px;
-    }
-  }
-
-  @media(min-width:1024px){
-    header{
-      width: 1015px;
-    }
-    .input-search{
-      margin-left:350px;
-    }
-  }
-
-  @media(min-width:1440px){
-    header{
-      display:flex;
-      width:1435px;
-      align-items:center;
-      height:100px;
-    }
-    .input-search{
-      width:390px;
-      margin-left:680px;
-    }
-
-    .title-header{
-      margin-left: 72px;
-    }
-
-    button{
-      margin-left:60px;
-    }
-
-  }
+}
 `;

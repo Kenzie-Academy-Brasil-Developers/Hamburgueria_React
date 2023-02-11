@@ -1,18 +1,12 @@
-import { Container } from "./styles";
-import React from "react";
+import ProductCard from "../ProductCard";
 
-const ProductList = ({ element,addProductToTeam}) => {
+
+const ProductList = ({addmyProducts, searchProductList}) => {
   return (
     <>
-      <Container>
-        <li>
-          <img src={element.img} alt="" />
-          <h3>{element.name}</h3>
-          <span>{element.category}</span>
-          <small>R$ {element.price}</small>
-          <button onClick={()=> addProductToTeam(element)}>Adicionar</button>
-        </li>
-      </Container>
+      {searchProductList.map((element) => (
+        <ProductCard key={element.id} element={element} addmyProducts={addmyProducts}/>
+      ))}
     </>
   );
 };

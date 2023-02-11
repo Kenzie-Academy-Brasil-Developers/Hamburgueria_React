@@ -1,68 +1,97 @@
-import ProductList from "./components/ProductList";
 import { GlobalStyle } from "./components/GlobalStyles";
+import Header from './components/Header';
+import ProductList from "./components/ProductList";
 import React, { useEffect, useState } from "react";
-import Header from "./components/Header";
 import { api } from "./components/services/api";
-// import Cart from "./components/Cart";
-import CartToCard from "./components/Cart->Card/addCart";
+import CartToCard from "./components/CartToCard";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
 function App() {
-  const localProductTeam = localStorage.getItem("@PRODUTOSFOOD")
+  const localmyProducts = localStorage.getItem("@PRODUTOSFOOD")
+  const [products, setProducts] = useState([])
+  const [myProducts, setmyProducts] = useState(localmyProducts ? JSON.parse(localmyProducts) : [])
   const [loading, setLoding] = useState(false)
-  const [products, setProducts] = useState([]);
-  const [productTeam, setProductTeam] = useState(localProductTeam ? JSON.parse(localProductTeam) : [])
+  const [totalProducts, setTotalProducts] = useState(0)
+  const [search, setSearch] = useState("")
+
+
+  const searchProductList = products.filter((prod) => {
+    return search === "" ? true : (prod.name.toLowerCase()).includes(search.toLowerCase())
+
+  })
+
+  useEffect(() => {
+    const totalValue = myProducts.reduce((acc, product) => {
+      return acc + product.price;
+    }, 0)
+    setTotalProducts(totalValue.toFixed(2))
+  }, [myProducts])
+
 
 
   useEffect(() => {
-    localStorage.setItem("@PRODUTOSFOOD", JSON.stringify(productTeam))
-  }, [productTeam])
+    localStorage.setItem("@PRODUTOSFOOD", JSON.stringify(myProducts))
+  }, [myProducts])
 
 
-  const addProductToTeam = (product) => {
-    if (productTeam.length < 2) {
-      const newProduct = { ...product }
-      setProductTeam([...productTeam, newProduct])
-    } else {
-      toast.error('você só pode comprar 2 produtos!')
+  useEffect(() => {
+    async function getProducts() {
+      try {
+        const response = await api.get("products");
+        setProducts(response.data);
+      } catch (error) {
+      } finally {
+      }
     }
-  }
-
-  const removeProductToTeam = (productId) => {
-    const newProductTeam = productTeam.filter(product => product.id !== productId)
-    setProductTeam(newProductTeam)
-  }
-
+    getProducts();
+  }, []);
 
 
   useEffect(() => {
-
     async function getProducts() {
       try {
         setLoding(true)
         const response = await api.get("products");
-
         setProducts(response.data);
       } catch (error) {
       } finally {
-
         setTimeout(() => {
           setLoding(false)
-
         }, 1000);
       }
     }
-
-
     getProducts();
   }, []);
+
+
+  const addmyProducts = (product) => {
+    if (!myProducts.some(p => p.id === product.id)) {
+      setmyProducts([...myProducts, product])
+      toast.success('O produto foi adicionado com sucesso!')
+    } else {
+      toast.warning('este produto já está em sua lista!')
+    }
+  }
+
+  const removemyProduct = (productId) => {
+    const newList = myProducts.filter(product => product.id !== productId)
+    setmyProducts(newList)
+  }
+
+  const removeAllmyproducts = () => {
+    setmyProducts([])
+    setTimeout(() => {
+      toast.success('Todos removidos com sucesso!')
+
+    }, 1000);
+  }
+
   return (
 
     <>
-   <ToastContainer
+      <ToastContainer
         position="bottom-right"
         autoClose={1000}
         hideProgressBar={false}
@@ -72,37 +101,27 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="light"
+        theme="dark"
+        style={{ width: "315px", margin: '20px' }}
       />
-      {/* Same as */}
       <GlobalStyle />
-      <Header />
       {loading ? (
-        <p>70% construido...</p>
+        <p>Carregando....</p>
       ) : (
         <main>
-          {products.map(((element, index) => (
-            <ProductList key={index} element={element} addProductToTeam={addProductToTeam} />
-          )))}
+          <Header setSearch={setSearch} />
+          <ul>
+            <ProductList searchProductList={searchProductList} addmyProducts={addmyProducts} />
+            <CartToCard myProducts={myProducts} removemyProduct={removemyProduct} removeAllmyproducts={removeAllmyproducts} totalProducts={totalProducts} />
+          </ul>
+            <div>
+              {search && <p>Resultasos de busca para:{search}<button className="but-clean" onClick={() => setSearch('')}>Limpar Lista</button> </p>}
+              
+            </div>
         </main>
       )}
-      {/* <Cart /> */}
-      <CartToCard removeProductToTeam={removeProductToTeam} />
-
-      {productTeam.map(product => (
-        <ul key={product.id}>
-          <img class="img-cart" src={product.img} alt="" />
-          <div className="name-category">
-            <h3>{product.name}</h3>
-            <span className="category">{product.category}</span>
-          </div>
-          <button className="remove" onClick={() => removeProductToTeam(product.id)}>Remover</button>
-        </ul>
-      ))}
-   
-      {/* Same as */}
     </>
-  );
+  )
 }
 
 export default App;
