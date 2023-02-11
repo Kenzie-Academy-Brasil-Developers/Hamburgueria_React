@@ -56,6 +56,8 @@ export const GlobalStyle = createGlobalStyle`
     flex-wrap: wrap;
     align-items: center;
     max-width:881px;
+    text-decoration: none;
+    list-style: none;
   }
 
   .but-clean{
